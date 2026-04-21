@@ -1,4 +1,4 @@
-module tutorial-02-new-agent
+module tutorial-01-new-agent
 
 go 1.26.2
 

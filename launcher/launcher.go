@@ -13,8 +13,8 @@
 package launcher
 
 import (
-	"hello-world-agent/activity"
 	"net/http"
+	"tutorial-01-new-agent/activity"
 
 	"github.com/eclipse-cfm/cfm/assembly/httpclient"
 	"github.com/eclipse-cfm/cfm/assembly/serviceapi"
@@ -32,7 +32,7 @@ const (
 func LaunchAndWaitSignal(shutdown <-chan struct{}) {
 	config := natsagent.LauncherConfig{
 		AgentName:    "User Info Agent",
-		ServiceName:  "cfm.agent.hello-world",
+		ServiceName:  "cfm.agent.user-info",
 		ConfigPrefix: "agent.userinfo",
 		ActivityType: ActivityType,
 		AssemblyProvider: func() []system.ServiceAssembly {

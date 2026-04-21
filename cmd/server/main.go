@@ -1,7 +1,7 @@
 package main
 
 import (
-	"hello-world-agent/launcher"
+	"tutorial-01-new-agent/launcher"
 
 	"github.com/eclipse-cfm/cfm/common/runtime"
 )

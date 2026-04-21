@@ -2,16 +2,16 @@ package activity
 
 import (
 	"encoding/json"
-	"hello-world-agent/model"
 	"io"
 	"math/rand"
 	"net/http"
+	"tutorial-01-new-agent/model"
 
 	"github.com/eclipse-cfm/cfm/common/system"
 	"github.com/eclipse-cfm/cfm/pmanager/api"
 )
 
-type HelloWorldProcessor struct {
+type UserInfoProcessor struct {
 	api.BaseActivityProcessor
 	Monitor system.LogMonitor
 	// those are not exported:
@@ -19,8 +19,8 @@ type HelloWorldProcessor struct {
 	url        string
 }
 
-func NewProcessor(monitor system.LogMonitor, client http.Client, url string) HelloWorldProcessor {
-	return HelloWorldProcessor{
+func NewProcessor(monitor system.LogMonitor, client http.Client, url string) UserInfoProcessor {
+	return UserInfoProcessor{
 		BaseActivityProcessor: api.BaseActivityProcessor{},
 		Monitor:               monitor,
 		httpClient:            client,
@@ -28,7 +28,7 @@ func NewProcessor(monitor system.LogMonitor, client http.Client, url string) Hel
 	}
 }
 
-func (h HelloWorldProcessor) ProcessDeploy(activityContext api.ActivityContext) api.ActivityResult {
+func (h UserInfoProcessor) ProcessDeploy(activityContext api.ActivityContext) api.ActivityResult {
 
 	resp, err := h.httpClient.Get(h.url)
 	if err != nil {
@@ -57,7 +57,7 @@ func (h HelloWorldProcessor) ProcessDeploy(activityContext api.ActivityContext) 
 	return api.ActivityResult{Result: api.ActivityResultComplete}
 }
 
-func (h HelloWorldProcessor) ProcessDispose(activityContext api.ActivityContext) api.ActivityResult {
+func (h UserInfoProcessor) ProcessDispose(activityContext api.ActivityContext) api.ActivityResult {
 	//TODO implement me
 	h.Monitor.Infof("Disposing hello world: can't dispose of the entire world...")
 	return api.ActivityResult{Result: api.ActivityResultComplete}
