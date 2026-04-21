@@ -1,4 +1,4 @@
-module hello-world-agent
+module tutorial-02-new-agent
 
 go 1.26.2
 

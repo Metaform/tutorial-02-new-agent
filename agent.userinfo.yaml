@@ -65,5 +65,4 @@ data:
     uri: nats://nats.edc-v.svc.cluster.local:4222
     bucket: cfm-bucket
     stream: cfm-stream
-    httpport: 8080
     agent.remote.url: https://jsonplaceholder.typicode.com/users
