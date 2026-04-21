@@ -1,0 +1,61 @@
+info:
+  name: Create Orchestration Definition
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{pmBaseUrl}}/api/v1alpha1/orchestration-definitions"
+  body:
+    type: json
+    data: |-
+      {
+        "activities": {
+          "cfm.orchestration.vpa.deploy": [
+            {
+              "id": "kc-client-provisioner",
+              "type": "keycloak-activity",
+              "dependsOn": []
+            },
+            {
+              "id": "registration-agent",
+              "type": "registration-activity",
+              "dependsOn": [
+                "kc-client-provisioner"
+              ]
+            },
+            {
+              "id": "connector-provisioner",
+              "type": "edcv-activity",
+              "dependsOn": [
+                "kc-client-provisioner"
+              ]
+            },
+            {
+              "id": "onboarding-agent",
+              "type": "onboarding-activity",
+              "dependsOn": [
+                "connector-provisioner",
+                "registration-agent"
+              ]
+            },
+            {
+              "id": "user-info-agent",
+              "type": "user-info-activity",
+              "dependsOn": [
+                "onboarding-agent"
+              ]
+            }
+          ]
+        },
+        "description": "Orchestrates the deployment of a new dataspace member",
+        "schema": {},
+        "id": "{{$randomUUID}}"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

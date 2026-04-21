@@ -1,0 +1,15 @@
+info:
+  name: Get All Activity Definitions
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{pmBaseUrl}}/api/v1alpha1/activity-definitions"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,69 @@
+#
+# Copyright (c) 2026 Metaform Systems, Inc.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Contributors:
+#      Metaform Systems, Inc. - initial API and implementation
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-info-agent
+  namespace: edc-v
+  labels:
+    app: user-info-agent
+    platform: edcv
+    type: edcv-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-info-agent
+  template:
+    metadata:
+      labels:
+        app: user-info-agent
+        platform: edcv
+        type: edcv-app
+    spec:
+      containers:
+        - name: user-info-agent
+          image: userinfoagent:latest
+          imagePullPolicy: Never
+          command: [ "/root/server" ]
+          args: [
+            "--mode=debug"
+          ]
+          envFrom:
+            - configMapRef:
+                name: telemetry-config # this is created by JAD
+          volumeMounts:
+            - name: user-info-agent-config
+              mountPath: /etc/appname
+              readOnly: true
+      volumes:
+        - name: user-info-agent-config
+          configMap:
+            name: user-info-agent-config
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-info-agent-config
+  namespace: edc-v
+
+data:
+  agent.userinfo.env: |
+    uri: nats://nats.edc-v.svc.cluster.local:4222
+    bucket: cfm-bucket
+    stream: cfm-stream
+    httpport: 8080
+    agent.remote.url: https://jsonplaceholder.typicode.com/users
