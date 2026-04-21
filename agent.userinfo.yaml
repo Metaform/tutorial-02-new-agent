@@ -14,26 +14,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-info-agent
+  name: cfm-user-info-agent
   namespace: edc-v
   labels:
-    app: user-info-agent
+    app: cfm-user-info-agent
     platform: edcv
     type: edcv-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user-info-agent
+      app: cfm-user-info-agent
   template:
     metadata:
       labels:
-        app: user-info-agent
+        app: cfm-user-info-agent
         platform: edcv
         type: edcv-app
     spec:
       containers:
-        - name: user-info-agent
+        - name: cfm-user-info-agent
           image: userinfoagent:latest
           imagePullPolicy: Never
           command: [ "/root/server" ]
@@ -44,20 +44,20 @@ spec:
             - configMapRef:
                 name: telemetry-config # this is created by JAD
           volumeMounts:
-            - name: user-info-agent-config
+            - name: cfm-user-info-agent-config
               mountPath: /etc/appname
               readOnly: true
       volumes:
-        - name: user-info-agent-config
+        - name: cfm-user-info-agent-config
           configMap:
-            name: user-info-agent-config
+            name: cfm-user-info-agent-config
       restartPolicy: Always
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user-info-agent-config
+  name: cfm-user-info-agent-config
   namespace: edc-v
 
 data:
