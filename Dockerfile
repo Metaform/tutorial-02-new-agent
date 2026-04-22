@@ -1,13 +1,19 @@
 # Build stage
-FROM golang:1.26.2 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.26.2 AS builder
+ARG TARGETOS
+ARG TARGETARCH
 
 WORKDIR /app
 
-# Copy source code
+# Cache dependencies separately from source
+COPY go.mod go.sum ./
+RUN go mod download
+
 COPY . .
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o server cmd/server/main.go
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -ldflags="-s -w" -o server cmd/server/main.go
 
 # Runtime stage
 FROM gcr.io/distroless/static-debian12:nonroot
