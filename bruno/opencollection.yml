@@ -1,7 +1,7 @@
 opencollection: 1.0.0
 
 info:
-  name: Custom Agent
+  name: UserInfo Agent
 config:
   proxy:
     inherit: true

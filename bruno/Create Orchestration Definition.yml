@@ -11,6 +11,8 @@ http:
     data: |-
       {
         "activities": {
+          "cfm.orchestration.vpa.dispose":[],
+          
           "cfm.orchestration.vpa.deploy": [
             {
               "id": "kc-client-provisioner",

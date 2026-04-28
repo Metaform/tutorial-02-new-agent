@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "description": "Say Hello World",
+        "description": "This pulls down some random user info and adds it to the activity context",
         "inputSchema": {},
         "outputSchema": {},
         "type": "user-info-activity"
