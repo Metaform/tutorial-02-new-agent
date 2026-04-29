@@ -9,6 +9,8 @@ import (
 
 	"github.com/eclipse-cfm/cfm/common/system"
 	"github.com/eclipse-cfm/cfm/pmanager/api"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 type UserInfoProcessor struct {
@@ -30,19 +32,27 @@ func NewProcessor(monitor system.LogMonitor, client http.Client, url string) Use
 
 func (h UserInfoProcessor) ProcessDeploy(activityContext api.ActivityContext) api.ActivityResult {
 
+	tracer := otel.GetTracerProvider().Tracer("cfm.agent.user-info")
+	_, span := tracer.Start(activityContext.Context(), "fetch-user-info")
+	defer span.End()
+
 	resp, err := h.httpClient.Get(h.url)
 	if err != nil {
+		span.RecordError(err)
 		return api.ActivityResult{Result: api.ActivityResultFatalError, Error: err}
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
+	span.AddEvent("user data fetched")
+
 	if err != nil {
 		return api.ActivityResult{Result: api.ActivityResultFatalError, Error: err}
 	}
 	// this REST call returns a list of users, we just pick one at random, and set them on the output
 	var result []model.User
 	if err := json.Unmarshal(body, &result); err != nil {
+		span.RecordError(err)
 		return api.ActivityResult{Result: api.ActivityResultFatalError, Error: err}
 	}
 
@@ -50,6 +60,7 @@ func (h UserInfoProcessor) ProcessDeploy(activityContext api.ActivityContext) ap
 	if len(result) > 0 {
 		randomIndex := rand.Intn(len(result))
 		selectedUser := result[randomIndex]
+		span.SetAttributes(attribute.Int("userIndex", randomIndex), attribute.String("userName", selectedUser.Name))
 		activityContext.SetOutputValue("selectedUser", selectedUser)
 		h.Monitor.Infof("Fetched User Info for: %s (%s)", selectedUser.Name, selectedUser.Username)
 	}
